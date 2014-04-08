@@ -24,6 +24,37 @@ public class Sprite {
 			135, 0xE4005F);
 	public static Sprite lowerTube = new Sprite(SpriteSheet.tiles, 330, 0, 26,
 			121, 0xE4005F);
+	
+	//Numbers
+	public static Sprite[] smallNum = new Sprite [10];
+	public static Sprite[] bigNum = {
+		new Sprite(SpriteSheet.tiles, 287, 99, 9, 12, 0xE4005F),	//0
+		new Sprite(SpriteSheet.tiles, 288, 117, 9, 12, 0xE4005F),	//1
+		new Sprite(SpriteSheet.tiles, 288, 133, 9, 12, 0xE4005F),	//2
+		new Sprite(SpriteSheet.tiles, 288, 149, 9, 12, 0xE4005F),	//3
+		new Sprite(SpriteSheet.tiles, 286, 172, 9, 12, 0xE4005F),	//4
+		new Sprite(SpriteSheet.tiles, 286, 184, 9, 12, 0xE4005F),	//5
+		new Sprite(SpriteSheet.tiles, 164, 244, 9, 12, 0xE4005F),	//6
+		new Sprite(SpriteSheet.tiles, 174, 244, 9, 12, 0xE4005F),	//7
+		new Sprite(SpriteSheet.tiles, 184, 244, 9, 12, 0xE4005F),	//8
+		new Sprite(SpriteSheet.tiles, 194, 244, 9, 12, 0xE4005F),	//9
+	};
+	
+	//Scoring
+	public static Sprite scoreBoard = new Sprite(SpriteSheet.tiles, 146,58,113, 58, 0xE4005F);
+	public static Sprite gameOver = new Sprite(SpriteSheet.tiles, 146,199,94, 19, 0xE4005F);
+	
+	//Medals
+	public static Sprite medalPlatinum = new Sprite(SpriteSheet.tiles, 220,144,22, 22, 0xE4005F);
+	public static Sprite medalBronze = new Sprite(SpriteSheet.tiles, 302,137,22, 22, 0xE4005F);
+	public static Sprite medalGold = new Sprite(SpriteSheet.tiles, 242,229,22, 22, 0xE4005F);
+	public static Sprite medalSilver = new Sprite(SpriteSheet.tiles, 266,229,22, 22, 0xE4005F);
+	
+	//Misc
+	public static Sprite tap = new Sprite(SpriteSheet.tiles, 171,121,40, 50, 0xE4005F);
+	public static Sprite title = new Sprite(SpriteSheet.tiles, 146,173,96, 22, 0xE4005F); 
+	public static Sprite newHigh = new Sprite(SpriteSheet.tiles, 146,246,16, 7, 0xE4005F);
+	public static Sprite okay = new Sprite(SpriteSheet.tiles, 246,134,40, 14, 0xE4005F);
 
 	// -----------SPRITES--------------
 
@@ -133,7 +164,6 @@ public class Sprite {
 					int color = spriteSheet.pixels[xOrg + u + (yOrg + v)
 							* spriteSheet.width];
 					if (color != alphaColor) {
-						int X = x + xPos;
 						int Y = y + yPos;
 						double scale = Game.scale;
 						if (Y >= floor.y*scale) {
