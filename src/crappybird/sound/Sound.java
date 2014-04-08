@@ -1,6 +1,5 @@
 package crappybird.sound;
 
-import java.applet.*;
 import java.io.File;
 
 import javax.sound.sampled.AudioFormat;

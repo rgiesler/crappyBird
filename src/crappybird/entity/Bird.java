@@ -19,19 +19,19 @@ public class Bird extends Entity {
 		this.animation = animation;
 		animationCycle = 2;
 		animationCycleCounter = 0;
-		yVel = 0;
+		yVel = 3;
 		yAccel = .2;
 	}
 	
 
 	public void render(Screen screen) {
 		double rotationAngle = 0;
-		rotationAngle = yVel * 0.2;
+		rotationAngle = yVel * 0.2 - 0.6;
 		
 		if (rotationAngle > Math.PI / 2)
 			rotationAngle = Math.PI / 2;
-		if (rotationAngle < -Math.PI / 2)
-			rotationAngle = -Math.PI / 2;
+		if (rotationAngle < -0.4)
+			rotationAngle = -0.4;
 		animation[animationCycle].render(screen, x, y, rotationAngle);
 	}
 
@@ -49,14 +49,25 @@ public class Bird extends Entity {
 		y += yVel;
 	}
 	
+	public void updateFlap() {
+		// Switch Animation
+				animationCycleCounter++;
+				if (animationCycleCounter > 10) {
+					animationCycle++;
+					animationCycleCounter = 0;
+					if (animationCycle >= animation.length)
+						animationCycle = 0;
+				}
+	}
+	
 	public boolean collide (Pipe pipe) {
 		double rotationAngle = 0;
-		rotationAngle = yVel * 0.2;
+		rotationAngle = yVel * 0.2 - 0.6;
 		
 		if (rotationAngle > Math.PI / 2)
 			rotationAngle = Math.PI / 2;
-		if (rotationAngle < -Math.PI / 2)
-			rotationAngle = -Math.PI / 2;
+		if (rotationAngle < -0.4)
+			rotationAngle = -0.4;
 		return animation[animationCycle].collide(x, y, rotationAngle, pipe);
 	}
 	
