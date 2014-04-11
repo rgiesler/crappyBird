@@ -222,14 +222,17 @@ public class Game extends Canvas implements Runnable {
 	}
 
 	public void decideMedal(int score) {
-		if (score >= 10)
-			medal = Medal.BRONZE;
-		if (score >= 20)
-			medal = Medal.SILVER;
-		if (score >= 30)
-			medal = Medal.GOLD;
 		if (score >= 40)
 			medal = Medal.PLATINUM;
+		else if (score >= 30)
+			medal = Medal.GOLD;
+		else if (score >= 20)
+			medal = Medal.SILVER;
+		else if (score >= 10)
+			medal = Medal.BRONZE;
+		else 
+			medal = Medal.NONE;
+		
 	}
 
 	public void render() {
