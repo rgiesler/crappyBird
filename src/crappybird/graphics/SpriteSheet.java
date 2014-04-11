@@ -1,6 +1,7 @@
 package crappybird.graphics;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
@@ -19,8 +20,7 @@ public class SpriteSheet {
 
 	private void load() {
 		try {
-			BufferedImage image = ImageIO.read(SpriteSheet.class
-					.getResource(path));
+			BufferedImage image = ImageIO.read(new File("res\\" + path));
 			width = image.getWidth();
 			height = image.getHeight();
 			pixels = new int[width * height];
