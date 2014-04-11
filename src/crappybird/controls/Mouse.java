@@ -2,7 +2,6 @@ package crappybird.controls;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-
 import crappybird.Game;
 import crappybird.Game.State;
 import crappybird.entity.Bird;
@@ -36,9 +35,9 @@ public class Mouse implements MouseListener {
 		}
 		if (Game.state == State.PLAY) {
 			Bird.theBird.yVel = -3;
-			Sound.playSound("res\\sfx_wing.wav");
+			Sound.playSound("sfx_wing.wav");
 		} else if (Game.state == State.SCORE) {
-			Sound.playSound("res\\sfx_swooshing.wav");
+			Sound.playSound("sfx_swooshing.wav");
 			reset();
 		}
 	}

@@ -7,11 +7,7 @@ import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
+import java.util.prefs.Preferences;
 
 import javax.swing.JFrame;
 
@@ -60,6 +56,8 @@ public class Game extends Canvas implements Runnable {
 	private int[] pixels = ((DataBufferInt) image.getRaster().getDataBuffer())
 			.getData();
 
+	private Preferences prefs;
+
 	public static String title = "CrappyBird";
 
 	public Game() {
@@ -70,27 +68,9 @@ public class Game extends Canvas implements Runnable {
 		frame = new JFrame();
 		mouse = new Mouse();
 		addMouseListener(mouse);
-		
-		try {
-			 File file = new File("HighScore.txt");
-			 FileReader reader = new FileReader(file);
-			 char[] chars = new char[(int) file.length()];
-		     reader.read(chars);
-		     String content = new String(chars);
-		     scoreBest = Integer.parseInt(content.replaceAll("\\s+", ""));
-		     reader.close();
-		} catch (Exception e)
-		{
-			System.out.println(e);
-		}
-		if (scoreBest >=10)
-			medal = Medal.BRONZE;
-		if (scoreBest >=20)
-			medal = Medal.SILVER;
-		if (scoreBest >=30)
-			medal = Medal.GOLD;
-		if (scoreBest >=40)
-			medal = Medal.PLATINUM;
+
+		prefs = Preferences.userRoot().node(this.getClass().getName());
+		scoreBest = prefs.getInt("HighScore", 0);
 	}
 
 	public synchronized void start() {
@@ -156,57 +136,42 @@ public class Game extends Canvas implements Runnable {
 					&& Pipe.pipe1.passed == false) {
 				Pipe.pipe1.passed = true;
 				score++;
-				Sound.playSound("res\\sfx_point.wav");
+				Sound.playSound("sfx_point.wav");
 			}
 			if (Bird.theBird.x + Sprite.birdMid.w / 2 >= Pipe.pipe2.x
 					&& Pipe.pipe2.passed == false) {
 				Pipe.pipe2.passed = true;
 				score++;
-				Sound.playSound("res\\sfx_point.wav");
+				Sound.playSound("sfx_point.wav");
 			}
 			if (Bird.theBird.x + Sprite.birdMid.w / 2 >= Pipe.pipe3.x
 					&& Pipe.pipe3.passed == false) {
 				Pipe.pipe3.passed = true;
 				score++;
-				Sound.playSound("res\\sfx_point.wav");
+				Sound.playSound("sfx_point.wav");
 			}
-			// Collision Detection
 
+			// Collision Detection
 			if (Bird.theBird.collide(Pipe.pipe1)
 					|| Bird.theBird.collide(Pipe.pipe2)
 					|| Bird.theBird.collide(Pipe.pipe3)) {
-				Sound.playSound("res\\sfx_hit.wav");
-				Sound.playSound("res\\sfx_die.wav");
+				Sound.playSound("sfx_hit.wav");
+				Sound.playSound("sfx_die.wav");
 				state = State.FALL;
 				flash = 50;
 			} else if (Bird.theBird.collide(Floor.theFloor)) {
-				Sound.playSound("res\\sfx_hit.wav");
-				Sound.playSound("res\\sfx_die.wav");
+				Sound.playSound("sfx_hit.wav");
+				Sound.playSound("sfx_die.wav");
 				state = State.SCOREBOARDSCROLL;
-				Sound.playSound("res\\sfx_swooshing.wav");
+				Sound.playSound("sfx_swooshing.wav");
 				flash = 50;
+				decideMedal(score);
 				if (score > scoreBest) {
 					scoreBest = score;
-					try {
-						PrintWriter writer;
-						writer = new PrintWriter("HighScore.txt", "UTF-8");
-						writer.println(score);
-						writer.close();
-					} catch (FileNotFoundException
-							| UnsupportedEncodingException e) {
-						e.printStackTrace();
-					}
+					prefs.putInt("HighScore", scoreBest);
+
 					newHighScore = true;
-					if (score >= 10)
-						medal = Medal.BRONZE;
-					if (score >= 20)
-						medal = Medal.SILVER;
-					if (score >= 30)
-						medal = Medal.GOLD;
-					if (score >= 40)
-						medal = Medal.PLATINUM;
-				}
-				else
+				} else
 					newHighScore = false;
 			} else {
 				Floor.theFloor.update();
@@ -219,29 +184,14 @@ public class Game extends Canvas implements Runnable {
 		case FALL:
 			if (Bird.theBird.collide(Floor.theFloor)) {
 				state = State.SCOREBOARDSCROLL;
-				Sound.playSound("res\\sfx_swooshing.wav");
-				if (score > scoreBest){
+				Sound.playSound("sfx_swooshing.wav");
+				decideMedal(score);
+				if (score > scoreBest) {
 					scoreBest = score;
-					try {
-						PrintWriter writer;
-						writer = new PrintWriter("HighScore.txt", "UTF-8");
-						writer.println(score);
-						writer.close();
-					} catch (FileNotFoundException
-							| UnsupportedEncodingException e) {
-						e.printStackTrace();
-					}
+					prefs.putInt("HighScore", scoreBest);
 					newHighScore = true;
-				}else
+				} else
 					newHighScore = false;
-				if (score >= 10)
-					medal = Medal.BRONZE;
-				if (score >= 20)
-					medal = Medal.SILVER;
-				if (score >= 30)
-					medal = Medal.GOLD;
-				if (score >= 40)
-					medal = Medal.PLATINUM;
 			} else {
 				Bird.theBird.update();
 			}
@@ -271,6 +221,17 @@ public class Game extends Canvas implements Runnable {
 			flash--;
 	}
 
+	public void decideMedal(int score) {
+		if (score >= 10)
+			medal = Medal.BRONZE;
+		if (score >= 20)
+			medal = Medal.SILVER;
+		if (score >= 30)
+			medal = Medal.GOLD;
+		if (score >= 40)
+			medal = Medal.PLATINUM;
+	}
+
 	public void render() {
 		BufferStrategy bs = getBufferStrategy();
 		if (bs == null) {
@@ -288,7 +249,7 @@ public class Game extends Canvas implements Runnable {
 		Floor.theFloor.render(game);
 		Bird.theBird.render(game);
 		Scoreboard.scoreBoard.render(game);
-		if (state == State.PAUSE){
+		if (state == State.PAUSE) {
 			Sprite.tap.render(game, 60, 103);
 			Sprite.title.render(game, 23, 50);
 		}
@@ -297,7 +258,7 @@ public class Game extends Canvas implements Runnable {
 		if (state == State.SCOREBOARDSCROLL || state == State.SCORECOUNT
 				|| state == State.SCORE)
 			Sprite.gameOver.render(game, 24, 65);
-		if(state == State.SCORE)
+		if (state == State.SCORE)
 			Sprite.okay.render(game, 51, 165);
 		if (state == State.SCORECOUNT || state == State.SCORE) {
 			Text.displayLargeText(game, scoreCounter, 109, 116);
